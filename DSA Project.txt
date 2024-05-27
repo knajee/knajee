@@ -1,0 +1,173 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int sap;
+    string Name;
+    string Dept;
+    float CGPA;
+    Node* next;
+};
+
+Node* head = new Node();
+
+bool check(int x) {
+    if (head == NULL)
+        return false;
+
+    Node* t = new Node;
+    t = head;
+
+    while (t != NULL) {
+        if (t->sap == x)
+            return true;
+        t = t->next;
+    }
+
+    return false;
+}
+
+void Insert_Record(int sap, string Name, string Dept, float CGPA) {
+    if (check(sap)) {
+        cout << "Student with this record Already Exists\n";
+        return;
+    }
+
+    Node* t = new Node();
+    t->sap = sap;
+    t->Name = Name;
+    t->Dept = Dept;
+    t->CGPA = CGPA;
+    t->next = NULL;
+
+    if (head == NULL || (head->sap >= t->sap)) {
+        t->next = head;
+        head = t;
+    }
+    else {
+        Node* c = head;
+        while (c->next != NULL && c->next->sap < t->sap) {
+            c = c->next;
+        }
+        t->next = c->next;
+        c->next = t;
+    }
+
+    cout << "Record Inserted Successfully\n";
+}
+
+void Search_Record(int sap) {
+    if (!head) {
+        cout << "No such Record Available\n";
+        return;
+    }
+    else {
+        Node* p = head;
+        while (p) {
+            if (p->sap == sap) {
+                cout << "Sap Number\t" << p->sap << endl;
+                cout << "Name\t\t" << p->Name << endl;
+                cout << "Department\t" << p->Dept << endl;
+                cout << "CGPA\t\t" << p->CGPA << endl;
+                return;
+            }
+            p = p->next;
+        }
+
+        if (p == NULL)
+            cout << "No such Record Available\n";
+    }
+}
+
+int Delete_Record(int sap) {
+    Node* t = head;
+    Node* p = NULL;
+
+    if (t != NULL && t->sap == sap) {
+        head = t->next;
+        delete t;
+
+        cout << "Record Deleted Successfully\n";
+        return 0;
+    }
+
+    while (t != NULL && t->sap != sap) {
+        p = t;
+        t = t->next;
+    }
+    if (t == NULL) {
+        cout << "Record does not Exist\n";
+        return -1;
+    }
+
+    p->next = t->next;
+    delete t;
+
+    cout << "Record Deleted Successfully\n";
+
+    return 0;
+}
+
+void Show_Record() {
+    Node* p = head;
+    if (p == NULL) {
+        cout << "No Record Available\n";
+    }
+    else {
+        cout << "Index\tName\tCourse\tCGPA\n";
+
+        while (p != NULL) {
+            cout << p->sap << " \t" << p->Name << "\t" << p->Dept << "\t" << p->CGPA << endl;
+            p = p->next;
+        }
+    }
+}
+
+int main() {
+    head = NULL;
+    string Name, Course;
+    int Sap;
+    float CGPA;
+
+    while (true) {
+        cout << "\n\t\tWelcome to Student Record Management System\n\n\tPress\n\t1 to create a new Record\n\t2 to delete a student record\n\t3 to Search a Student Record\n\t4 to view all students record\n\t5 to Exit\n";
+        cout << "\nEnter your Choice\n";
+        int Choice;
+
+        cin >> Choice;
+        if (Choice == 1) {
+            cout << "Enter Name of Student\n";
+            cin >> Name;
+            cout << "Enter Sap Number of Student\n";
+            cin >> Sap;
+            cout << "Enter Course of Student \n";
+            cin >> Course;
+            cout << "Enter CGPA of Student\n";
+            cin >> CGPA;
+            Insert_Record(Sap, Name, Course, CGPA);
+        }
+        else if (Choice == 2) {
+            cout << "Enter Sap Number of Student whose record is to be deleted\n";
+            cin >> Sap;
+            Delete_Record(Sap);
+        }
+        else if (Choice == 3) {
+            cout << "Enter Sap Number of Student whose record you want to Search\n";
+            cin >> Sap;
+            Search_Record(Sap);
+        }
+        else if (Choice == 4) {
+            Show_Record();
+        }
+        else if (Choice == 5) {
+            exit(0);
+        }
+        else {
+            cout << "Invalid Choice Try Again\n";
+            
+        }
+    }
+ 
+    return 0;
+}
