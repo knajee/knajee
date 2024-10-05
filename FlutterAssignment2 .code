@@ -1,1 +1,134 @@
+import 'package:flutter/material.dart';
 
+void main() => runApp(MyApp());
+
+class Product {
+  final String title;
+  final String description;
+  final double price;
+  final String imageUrl;
+
+  Product(this.title, this.description, this.price, this.imageUrl);
+}
+
+class MyApp extends StatelessWidget {
+  final List<Product> products = [
+    Product(
+      'Smartphone X',
+      'The latest Smartphone X features a 6.5-inch OLED display, 5G capability, and a triple-lens camera system. With 128GB of storage and 8GB of RAM, it\'s perfect for multitasking and storing all your photos and videos. The long-lasting battery ensures you stay connected all day.',
+      799.99,
+      'https://picsum.photos/id/1/200/300',
+    ),
+    Product(
+      'Laptop Pro',
+      'Laptop Pro is a powerhouse for professionals. It comes with a 15-inch Retina display, 16GB of RAM, and a 512GB SSD. The latest generation processor ensures smooth performance for demanding tasks like video editing and 3D rendering. Its slim design and 12-hour battery life make it perfect for on-the-go productivity.',
+      1299.99,
+      'https://picsum.photos/id/2/200/300',
+    ),
+    Product(
+      'Wireless Earbuds',
+      'Experience true wireless freedom with our Wireless Earbuds. Featuring active noise cancellation, touch controls, and a compact charging case, these earbuds deliver crystal-clear audio for up to 6 hours on a single charge. With IPX4 water resistance, they\'re perfect for workouts or rainy days.',
+      149.99,
+      'https://picsum.photos/id/3/200/300',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Product App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: ProductListScreen(products: products),
+    );
+  }
+}
+
+class ProductListScreen extends StatelessWidget {
+  final List<Product> products;
+
+  ProductListScreen({required this.products});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Product List')),
+      body: ListView.builder(
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(products[index].imageUrl),
+            ),
+            title: Text(products[index].title),
+            subtitle: Text(products[index].description, maxLines: 2, overflow: TextOverflow.ellipsis),
+            trailing: Text('\$${products[index].price.toStringAsFixed(2)}'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailScreen(product: products[index]),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ProductDetailScreen extends StatelessWidget {
+  final Product product;
+
+  ProductDetailScreen({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(product.title)),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(
+              product.imageUrl,
+              height: 300,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.title,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '\$${product.price.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Description:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    product.description,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
