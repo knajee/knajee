@@ -1,1 +1,84 @@
+import 'package:flutter/material.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'TabBar Example',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('TabBar with ListView and GridView'),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: 'ListView'),
+              Tab(text: 'GridView'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            // ListView Tab
+            ListView.builder(
+              itemCount: 20,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Icon(Icons.label),
+                  title: Text('Item ${index + 1}'),
+                  subtitle: Text('Subtitle ${index + 1}'),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Tapped on Item ${index + 1}')),
+                    );
+                  },
+                );
+              },
+            ),
+            // GridView Tab
+            GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 3 / 2,
+              ),
+              itemCount: 20,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Tapped on Grid ${index + 1}')),
+                      );
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.grid_on, size: 40),
+                        SizedBox(height: 8),
+                        Text('Grid ${index + 1}'),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
